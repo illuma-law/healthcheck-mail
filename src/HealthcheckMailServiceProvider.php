@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace IllumaLaw\HealthCheckPgvector;
+namespace IllumaLaw\HealthCheckMail;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-final class HealthcheckPgvectorServiceProvider extends PackageServiceProvider
+final class HealthcheckMailServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
         $package
-            ->name('healthcheck-pgvector')
+            ->name('healthcheck-mail')
             ->hasConfigFile()
             ->hasTranslations();
     }
