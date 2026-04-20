@@ -4,15 +4,15 @@
 [![Packagist License](https://img.shields.io/badge/Licence-MIT-blue)](http://choosealicense.com/licenses/mit/)
 [![Latest Stable Version](https://img.shields.io/packagist/v/illuma-law/healthcheck-mail?label=Version)](https://packagist.org/packages/illuma-law/healthcheck-mail)
 
-A focused mail extension health check for Spatie's [Laravel Health](https://spatie.be/docs/laravel-health/v1/introduction) package.
+A focused mail health check for Spatie's [Laravel Health](https://spatie.be/docs/laravel-health/v1/introduction) package.
 
-This package provides a simple, direct health check to verify that the `vector` extension (mail) is properly installed and active in your PostgreSQL database. This is critical for applications that rely on mail for storing AI embeddings and running semantic/similarity searches.
+This package provides a simple, direct health check to verify that your application's SMTP server is reachable and accepting TCP connections.
 
 ## Features
 
-- **Version Detection:** Checks if the `vector` extension is enabled and reports the specific mail version installed.
-- **Configurable Strictness:** Choose whether a missing mail extension should return a Warning (degraded) or a Failure (broken) status for your application.
-- **Query Safety:** Safely handles database connection errors or missing tables, returning a failed state with the exception message instead of crashing the health check suite.
+- **Connectivity Check:** Verifies that your Laravel application can successfully connect to the configured SMTP host and port.
+- **Latency Monitoring:** Measures the response time of the SMTP connection.
+- **Smart Skipping:** Automatically skips the check if the default mailer is set to `log`, `array`, `fail`, or `null`.
 
 ## Installation
 
@@ -22,24 +22,6 @@ Require this package with composer:
 composer require illuma-law/healthcheck-mail
 ```
 
-## Configuration
-
-You can publish the config file with:
-
-```shell
-php artisan vendor:publish --tag="healthcheck-mail-config"
-```
-
-The `healthcheck-mail.php` config file allows you to define whether the check is strictly required by default. 
-
-```php
-return [
-    // If true, the check will FAIL when the extension is missing.
-    // If false, it will generate a WARNING instead.
-    'required' => false,
-];
-```
-
 ## Usage & Integration
 
 Register the check inside your application's health service provider (e.g. `AppServiceProvider` or a dedicated `HealthServiceProvider`), alongside your other Spatie Laravel Health checks:
@@ -47,25 +29,11 @@ Register the check inside your application's health service provider (e.g. `AppS
 ### Basic Registration
 
 ```php
-use IllumaLaw\HealthCheckMail\MailExtensionCheck;
+use IllumaLaw\HealthCheckMail\MailConnectivityCheck;
 use Spatie\Health\Facades\Health;
 
 Health::checks([
-    MailExtensionCheck::new(),
-]);
-```
-
-### Fluent Configuration
-
-You can override the config file's default strictness on a per-check basis using the fluent `required()` method. 
-
-```php
-use IllumaLaw\HealthCheckMail\MailExtensionCheck;
-use Spatie\Health\Facades\Health;
-
-Health::checks([
-    // Make the health check FAIL immediately if mail is missing
-    MailExtensionCheck::new()->required(true),
+    MailConnectivityCheck::new(),
 ]);
 ```
 
@@ -73,10 +41,9 @@ Health::checks([
 
 The check interacts with the Spatie Health dashboard and JSON endpoints using these states:
 
-- **Ok:** The mail extension is installed. The short summary and meta data will include the exact installed version (e.g. `0.7.0`).
-- **Warning:** mail is missing, but `required` is set to `false`.
-- **Failed:** mail is missing and `required` is set to `true`.
-- **Failed (Exception):** The database query to `pg_extension` throws an exception (e.g., database connection down).
+- **Ok:** SMTP server is reachable and accepting connections.
+- **Skipped:** The default mailer is not an SMTP-based driver.
+- **Failed:** SMTP server was unreachable, or the mailer configuration is missing.
 
 ## Testing
 
