@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(composer install *)",
+      "Bash(gh api *)",
+      "Bash(vendor/bin/pest *)",
+      "Bash(gh repo *)",
+      "Bash(vendor/bin/phpstan analyse *)",
+      "Bash(composer dump-autoload *)",
+      "Bash(git *)"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "laravel-boost",
+    "nightwatch",
+    "playwright",
+    "instruckt"
+  ]
+}
