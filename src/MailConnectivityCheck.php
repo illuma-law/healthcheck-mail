@@ -40,9 +40,9 @@ final class MailConnectivityCheck extends Check
         $ms = (int) round((microtime(true) - $startedAt) * 1000);
 
         $meta = [
-            'mailer' => $mailer,
-            'host' => $host,
-            'port' => $port,
+            'mailer'           => $mailer,
+            'host'             => $host,
+            'port'             => $port,
             'response_time_ms' => $ms,
         ];
 

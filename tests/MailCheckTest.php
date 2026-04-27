@@ -38,7 +38,7 @@ it('fails when SMTP is unreachable', function () {
     config()->set('mail.default', 'smtp');
     config()->set('mail.mailers.smtp', [
         'host' => '127.0.0.1',
-        'port' => 9999, // Unlikely to be open
+        'port' => 9999,
     ]);
 
     $result = MailConnectivityCheck::new()->run();
